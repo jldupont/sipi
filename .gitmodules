@@ -1,0 +1,3 @@
+[submodule "sipi"]
+	path = sipi
+	url = git@github.com:jldupont/sipi.git
