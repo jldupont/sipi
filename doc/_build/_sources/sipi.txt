@@ -17,3 +17,10 @@ sipi Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`tools_os` Module
+----------------------
+
+.. automodule:: sipi.tools_os
+    :members:
+    :undoc-members:
+    :show-inheritance:

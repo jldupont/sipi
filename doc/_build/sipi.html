@@ -74,26 +74,119 @@ Configuration file format can either be <em>.json</em> or <em>.yaml</em> , the p
 <li>inferred using the command line argument #1</li>
 </ol>
 <p>The options are listed in order of priority.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">which</span><span class="p">()</span>
-<span class="go">(&#39;ns&#39;, &#39;cfg&#39;)</span>
-</pre></div>
-</div>
 <dl class="function">
 <dt id="sipi.cfg.get">
 <tt class="descclassname">sipi.cfg.</tt><tt class="descname">get</tt><big>(</big><em>param</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/sipi/cfg.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.cfg.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a configuration parameter</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">get</span><span class="p">(</span><span class="s">&quot;param1&quot;</span><span class="p">)</span>
+<p>Returns a native value e.g. list, dict, integer, string</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">get</span><span class="p">(</span><span class="s">&quot;param1&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;value1&quot;</span><span class="p">)</span>
+<span class="go">&#39;value1&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="sipi.cfg.which">
-<tt class="descclassname">sipi.cfg.</tt><tt class="descname">which</tt><big>(</big><big>)</big><a class="headerlink" href="#sipi.cfg.which" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sipi.cfg.</tt><tt class="descname">which</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sipi/cfg.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.cfg.which" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reports which file will be used to provide configuration</p>
 <p><em>file</em> and <em>ns</em> are optional.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">which</span><span class="p">()</span>
 <span class="go">(&#39;ns&#39;, &#39;cfg&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sipi.tools_os">
+<span id="tools-os-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">tools_os</span></tt> Module<a class="headerlink" href="#module-sipi.tools_os" title="Permalink to this headline">¶</a></h2>
+<p>Simple OS functions</p>
+<dl class="function">
+<dt id="sipi.tools_os.file_contents">
+<tt class="descclassname">sipi.tools_os.</tt><tt class="descname">file_contents</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#sipi.tools_os.file_contents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple &#8220;get file contents&#8221;</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rm</span><span class="p">(</span><span class="s">&#39;/tmp/JustTouching&#39;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustTouching&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">touch</span><span class="p">(</span><span class="s">&quot;/tmp/JustTouching&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustTouching&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_contents</span><span class="p">(</span><span class="s">&quot;/tmp/JustTouching&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rm</span><span class="p">(</span><span class="s">&#39;/tmp/JustTouching&#39;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustTouching&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_contents</span><span class="p">(</span><span class="s">&quot;/tmp/JustTouching&quot;</span><span class="p">)</span>
+<span class="go">(&#39;error&#39;, None)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sipi.tools_os.mkdir_p">
+<tt class="descclassname">sipi.tools_os.</tt><tt class="descname">mkdir_p</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/sipi/tools_os.html#mkdir_p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.tools_os.mkdir_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Silently (i.e. no exception thrown) makes a directory structure if possible</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir_p</span><span class="p">(</span><span class="s">&quot;/tmp/JustATestDir&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustATestDir&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir_p</span><span class="p">(</span><span class="s">&quot;/tmp/JustATestDir&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustATestDir&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rmdir</span><span class="p">(</span><span class="s">&quot;/tmp/JustATestDir&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustATestDir&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sipi.tools_os.quick_write">
+<tt class="descclassname">sipi.tools_os.</tt><tt class="descname">quick_write</tt><big>(</big><em>path</em>, <em>contents</em><big>)</big><a class="headerlink" href="#sipi.tools_os.quick_write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Best effort &#8220;write contents to file&#8221;</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">quick_write</span><span class="p">(</span><span class="s">&quot;/tmp/QuickWriteTest&quot;</span><span class="p">,</span> <span class="s">&quot;{&#39;param&#39;: &#39;value&#39;}&quot;</span><span class="p">)</span> 
+<span class="go">(&#39;ok&#39;, ...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_contents</span><span class="p">(</span><span class="s">&quot;/tmp/QuickWriteTest&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &quot;{&#39;param&#39;: &#39;value&#39;}&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rm</span><span class="p">(</span><span class="s">&#39;/tmp/QuickWriteTest&#39;</span><span class="p">)</span> 
+<span class="go">(&#39;ok&#39;, ...)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sipi.tools_os.resolve_path">
+<tt class="descclassname">sipi.tools_os.</tt><tt class="descname">resolve_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#sipi.tools_os.resolve_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolves a path with user and environment variables</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolve_path</span><span class="p">(</span><span class="s">&quot;~/.config&quot;</span><span class="p">)</span> 
+<span class="go">&#39;/home/.../.config&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sipi.tools_os.rm">
+<tt class="descclassname">sipi.tools_os.</tt><tt class="descname">rm</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/sipi/tools_os.html#rm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.tools_os.rm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Silently (i.e. no exception thrown) removes a path if possible</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rm</span><span class="p">(</span><span class="s">&quot;/tmp/NotAFile&quot;</span><span class="p">)</span> <span class="c">## no need to complain if there is no file</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/NotAFile&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sipi.tools_os.rmdir">
+<tt class="descclassname">sipi.tools_os.</tt><tt class="descname">rmdir</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/sipi/tools_os.html#rmdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.tools_os.rmdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Silently (i.e. no exception thrown) removes a directory if possible</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rmdir</span><span class="p">(</span><span class="s">&quot;/tmp/JustATestDir&quot;</span><span class="p">)</span>
+<span class="go">(&#39;error&#39;, (2, &#39;ENOENT&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir_p</span><span class="p">(</span><span class="s">&quot;/tmp/JustATestDir&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustATestDir&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rmdir</span><span class="p">(</span><span class="s">&quot;/tmp/JustATestDir&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustATestDir&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sipi.tools_os.touch">
+<tt class="descclassname">sipi.tools_os.</tt><tt class="descname">touch</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/sipi/tools_os.html#touch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.tools_os.touch" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">touch</span><span class="p">(</span><span class="s">&quot;/tmp/JustTouching&quot;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustTouching&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rm</span><span class="p">(</span><span class="s">&#39;/tmp/JustTouching&#39;</span><span class="p">)</span>
+<span class="go">(&#39;ok&#39;, &#39;/tmp/JustTouching&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -112,6 +205,7 @@ Configuration file format can either be <em>.json</em> or <em>.yaml</em> , the p
 <li><a class="reference internal" href="#">sipi Package</a><ul>
 <li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">sipi</span></tt> Package</a></li>
 <li><a class="reference internal" href="#module-sipi.cfg"><tt class="docutils literal"><span class="pre">cfg</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-sipi.tools_os"><tt class="docutils literal"><span class="pre">tools_os</span></tt> Module</a></li>
 </ul>
 </li>
 </ul>

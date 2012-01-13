@@ -52,21 +52,146 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Configuration Information API</span>
 
-<span class="sd">    Configuration files are kept in *~/.config/* </span>
-
-<span class="sd">    Configuration parameters are treated as &quot;read-only&quot;.</span>
-
-<span class="sd">    @created: on 2012-01-12</span>
-<span class="sd">    @author: jldupont</span>
+<span class="sd">    Configuration files are kept in *~/.config/*. Configuration parameters are treated as &quot;read-only&quot;.</span>
+<span class="sd">    Configuration file format can either be *.json* or *.yaml* , the priority being given to *.json*.</span>
+<span class="sd">    </span>
+<span class="sd">    Configuration file names can either be:</span>
+<span class="sd">    </span>
+<span class="sd">    1. specified using the *filename* parameter</span>
+<span class="sd">    2. specified using the *ns* parameter</span>
+<span class="sd">    3. inferred using the command line argument #0</span>
+<span class="sd">    4. inferred using the command line argument #1</span>
+<span class="sd">    </span>
+<span class="sd">    The options are listed in order of priority.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; which()</span>
+<span class="sd">    (&#39;ns&#39;, &#39;cfg&#39;)</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">yaml</span><span class="o">=</span><span class="bp">None</span>
 
+<span class="c">### GLOBALS - CONFIGURATION</span>
+<span class="n">base_dir</span><span class="o">=</span><span class="s">&quot;~/.config&quot;</span>
+<span class="n">ns</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">filename</span><span class="o">=</span><span class="bp">None</span>
 
+<span class="c">### GLOBALS - private</span>
+<span class="n">_resolved_type</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">_resolved_filepath</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">_config_data</span><span class="o">=</span><span class="bp">None</span>
+<span class="c">#####################</span>
+
+<div class="viewcode-block" id="which"><a class="viewcode-back" href="../../sipi.html#sipi.cfg.which">[docs]</a><span class="k">def</span> <span class="nf">which</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reports which file will be used to provide configuration</span>
+<span class="sd">    </span>
+<span class="sd">    *file* and *ns* are optional.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; which()</span>
+<span class="sd">    (&#39;ns&#39;, &#39;cfg&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">ns</span><span class="p">,</span> <span class="n">filename</span>
+    <span class="k">global</span> <span class="n">_resolved_type</span>
+
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">_resolved_type</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;filename&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">_resolved_type</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;ns&quot;</span><span class="p">,</span> <span class="n">ns</span><span class="p">)</span>
+            
+    <span class="k">if</span> <span class="n">_resolved_type</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        
+        <span class="n">b0</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">n0</span><span class="o">=</span><span class="n">b0</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c">### if there is only 1 sys.argv, then it must be it!</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">_resolved_type</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;ns&quot;</span><span class="p">,</span> <span class="n">n0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c">### at least 2 arguments on the command-line?</span>
+            <span class="c">### is the first one &quot;python&quot; in some way?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">n0</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;python&quot;</span><span class="p">):</span>
+                <span class="n">_resolved_type</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;ns&quot;</span><span class="p">,</span> <span class="n">n0</span><span class="p">)</span>
+        
+            <span class="n">b1</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">n1</span><span class="o">=</span><span class="n">b1</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+            <span class="n">_resolved_type</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;ns&quot;</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">_resolved_type</span>    
+</div>
 <div class="viewcode-block" id="get"><a class="viewcode-back" href="../../sipi.html#sipi.cfg.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a configuration parameter</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; get(&quot;param1&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_config_data</span>
+    
+    <span class="k">if</span> <span class="n">_config_data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_config_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+    
+    <span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_maybe_if_ns_then_generate_path</span><span class="p">(</span><span class="n">which</span><span class="p">())</span>
+    <span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_maybe_if_file_then_resolve_path</span><span class="p">((</span><span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">typ</span><span class="p">,</span> <span class="n">value</span>
+
+<span class="c">#################################################################################    </span>
+<span class="c">### PRIVATE</span>
+<span class="c">#################################################################################</span>
+
     </div>
+<span class="k">def</span> <span class="nf">_maybe_if_ns_then_generate_path</span><span class="p">((</span><span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="n">sjson</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">syaml</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    In order of priority:</span>
+<span class="sd">    </span>
+<span class="sd">    1. json</span>
+<span class="sd">    2. yaml</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; _maybe_if_ns_then_generate_path((&quot;ns&quot;, &quot;cfg&quot;), sjson=True)  # doctest:+ELLIPSIS</span>
+<span class="sd">    (&#39;json&#39;, &#39;/home/.../.config/cfg.json&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; _maybe_if_ns_then_generate_path((&quot;ns&quot;, &quot;cfg&quot;), syaml=True)  # doctest:+ELLIPSIS</span>
+<span class="sd">    (&#39;yaml&#39;, &#39;/home/.../.config/cfg.yaml&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">base_dir</span>
+    
+    <span class="k">if</span> <span class="n">typ</span><span class="o">!=</span><span class="s">&quot;ns&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    
+    <span class="n">r_base_dir</span><span class="o">=</span><span class="n">_resolve</span><span class="p">(</span><span class="n">base_dir</span><span class="p">)</span>
+    <span class="n">base_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r_base_dir</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    
+    <span class="n">json_path</span><span class="o">=</span><span class="n">base_path</span><span class="o">+</span><span class="s">&quot;.json&quot;</span>   
+    <span class="n">json_exists</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">json_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">json_exists</span> <span class="ow">or</span> <span class="n">sjson</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s">&quot;json&quot;</span><span class="p">,</span> <span class="n">json_path</span><span class="p">)</span>
+
+    <span class="n">yaml_path</span><span class="o">=</span><span class="n">base_path</span><span class="o">+</span><span class="s">&quot;.yaml&quot;</span>
+    <span class="n">yaml_exists</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">yaml_exists</span> <span class="ow">or</span> <span class="n">syaml</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s">&quot;yaml&quot;</span><span class="p">,</span> <span class="n">yaml_path</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;file not found&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">)))</span>
+        
+    
+<span class="k">def</span> <span class="nf">_maybe_if_file_then_resolve_path</span><span class="p">((</span><span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">typ</span><span class="o">==</span><span class="s">&quot;filename&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">_resolve</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_resolve</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+
+
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
 </pre></div>
 
           </div>
