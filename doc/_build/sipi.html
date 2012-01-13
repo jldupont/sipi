@@ -64,14 +64,38 @@
 <div class="section" id="module-sipi.cfg">
 <span id="cfg-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">cfg</span></tt> Module<a class="headerlink" href="#module-sipi.cfg" title="Permalink to this headline">¶</a></h2>
 <p>Simple Configuration Information API</p>
-<p>Configuration files are kept in <em>~/.config/</em></p>
-<p>Configuration parameters are treated as &#8220;read-only&#8221;.</p>
-<p>&#64;created: on 2012-01-12
-&#64;author: jldupont</p>
+<p>Configuration files are kept in <em>~/.config/</em>. Configuration parameters are treated as &#8220;read-only&#8221;.
+Configuration file format can either be <em>.json</em> or <em>.yaml</em> , the priority being given to <em>.json</em>.</p>
+<p>Configuration file names can either be:</p>
+<ol class="arabic simple">
+<li>specified using the <em>filename</em> parameter</li>
+<li>specified using the <em>ns</em> parameter</li>
+<li>inferred using the command line argument #0</li>
+<li>inferred using the command line argument #1</li>
+</ol>
+<p>The options are listed in order of priority.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">which</span><span class="p">()</span>
+<span class="go">(&#39;ns&#39;, &#39;cfg&#39;)</span>
+</pre></div>
+</div>
 <dl class="function">
 <dt id="sipi.cfg.get">
 <tt class="descclassname">sipi.cfg.</tt><tt class="descname">get</tt><big>(</big><em>param</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/sipi/cfg.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.cfg.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a configuration parameter</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">get</span><span class="p">(</span><span class="s">&quot;param1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sipi.cfg.which">
+<tt class="descclassname">sipi.cfg.</tt><tt class="descname">which</tt><big>(</big><big>)</big><a class="headerlink" href="#sipi.cfg.which" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reports which file will be used to provide configuration</p>
+<p><em>file</em> and <em>ns</em> are optional.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">which</span><span class="p">()</span>
+<span class="go">(&#39;ns&#39;, &#39;cfg&#39;)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
