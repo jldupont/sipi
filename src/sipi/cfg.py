@@ -13,8 +13,6 @@
     
     The options are listed in order of priority.
     
-    >>> which()
-    ('ns', 'cfg')
 """
 import os
 import sys
@@ -23,6 +21,8 @@ try:
     import yaml
 except:
     yaml=None
+
+import tools_os as tos
 
 ### GLOBALS - CONFIGURATION
 base_dir="~/.config"
@@ -33,6 +33,9 @@ filename=None
 _resolved_type=None
 _resolved_filepath=None
 _config_data=None
+_json_data=None
+_yaml_data=None
+_last_exception=None
 #####################
 
 def which():
@@ -78,17 +81,48 @@ def get(param, default=None):
     """
     Get a configuration parameter
     
-    >>> get("param1")
-    """
-    global _config_data
+    Returns a native value e.g. list, dict, integer, string
     
-    if _config_data:
-        return _config_data.get(param, default)
+    >>> get("param1", default="value1")
+    'value1'
+    """
+    global _config_data, _last_exception
+    
+    if _config_data is not None:
+        return ('ok', _config_data.get(param, default))
     
     typ, value=_maybe_if_ns_then_generate_path(which())
     typ, value=_maybe_if_file_then_resolve_path((typ, value))
+
+    if typ=="error":
+        return ("ok:default", default)
+
+    if typ=="json" or typ=="yaml":
+        _code, maybe_data=tos.file_contents(value)
+        if maybe_data is None:
+            return ("ok:default", default)
+
+    if typ=="json":
+        try:    
+            data=json.loads(maybe_data)
+            global _json_data
+            _json_data=data
+        except Exception,e: 
+            data={}
+            _last_exception=e
     
-    return typ, value
+    if typ=="yaml":
+        try:    
+            data=yaml.load(maybe_data)
+            global _yaml_data
+            _yaml_data=data
+        except Exception, e: 
+            data={}
+            _last_exception=e
+    
+    _config_data=data
+    
+    return get(param, default)
 
 #################################################################################    
 ### PRIVATE
@@ -129,8 +163,14 @@ def _maybe_if_ns_then_generate_path((typ, value), sjson=False, syaml=False):
         
     
 def _maybe_if_file_then_resolve_path((typ, value)):
+    """
+    >>> _maybe_if_file_then_resolve_path(("filename", "~/.config/somefile.json"))
+    ('json', '/home/jldupont/.config/somefile.json')
+    """
     if typ=="filename":
-        return (typ, _resolve(value))
+        path=_resolve(value)
+        _root, ext=os.path.splitext(path)
+        return (ext.strip("."), path)
     return (typ, value)
 
 def _resolve(path):
