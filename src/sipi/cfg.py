@@ -1,7 +1,8 @@
 """
     Simple Configuration Information API
 
-    Configuration files are kept in *~/.config/*. Configuration parameters are treated as "read-only".
+    Configuration files are kept in *~/.config/* (or can be configured through the module's global `base_dir`). 
+    Configuration parameters are treated as "read-only".
     Configuration file format can either be *.json* or *.yaml* , the priority being given to *.json*.
     
     Configuration file names can either be:
