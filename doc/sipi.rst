@@ -24,3 +24,19 @@ sipi Package
     :members:
     :undoc-members:
     :show-inheritance:
+
+:mod:`cmd` Module
+----------------------
+
+.. automodule:: sipi.cmd
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`flow` Module
+----------------------
+
+.. automodule:: sipi.flow
+    :members:
+    :undoc-members:
+    :show-inheritance:

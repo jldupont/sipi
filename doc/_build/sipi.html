@@ -64,7 +64,8 @@
 <div class="section" id="module-sipi.cfg">
 <span id="cfg-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">cfg</span></tt> Module<a class="headerlink" href="#module-sipi.cfg" title="Permalink to this headline">¶</a></h2>
 <p>Simple Configuration Information API</p>
-<p>Configuration files are kept in <em>~/.config/</em>. Configuration parameters are treated as &#8220;read-only&#8221;.
+<p>Configuration files are kept in <em>~/.config/</em> (or can be configured through the module&#8217;s global <cite>base_dir</cite>). 
+Configuration parameters are treated as &#8220;read-only&#8221;.
 Configuration file format can either be <em>.json</em> or <em>.yaml</em> , the priority being given to <em>.json</em>.</p>
 <p>Configuration file names can either be:</p>
 <ol class="arabic simple">
@@ -192,6 +193,56 @@ Configuration file format can either be <em>.json</em> or <em>.yaml</em> , the p
 </dd></dl>
 
 </div>
+<div class="section" id="module-sipi.cmd">
+<span id="cmd-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">cmd</span></tt> Module<a class="headerlink" href="#module-sipi.cmd" title="Permalink to this headline">¶</a></h2>
+<p>Simple Command Line tools</p>
+<dl class="function">
+<dt id="sipi.cmd.process">
+<tt class="descclassname">sipi.cmd.</tt><tt class="descname">process</tt><big>(</big><em>line_proc</em>, <em>input_ctx={}</em>, <em>parser_args=None</em>, <em>desc=''</em><big>)</big><a class="reference internal" href="_modules/sipi/cmd.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.cmd.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process input files</p>
+<p><cite>line_proc</cite> must be a callable which takes 1 tuple as input:
+(ctx, (code, data))</p>
+<p>The parameter <cite>ctx</cite> contains contextual information:</p>
+<ul class="simple">
+<li><cite>args</cite>: processed command line arguments (from argparse)</li>
+<li><cite>file</cite>: path of current file being processed</li>
+<li><cite>lineno</cite>: line number in current file</li>
+<li><cite>line</cite>: actual string of the line</li>
+<li><cite>total_files</cite>: the current total of files processed (starts at 1)</li>
+<li><cite>total_lines</cite>: the current total of lines processed for all files processed</li>
+</ul>
+<p>Codes sent to <cite>line_proc</cite>:</p>
+<ul class="simple">
+<li><em>open</em>:  processing starts</li>
+<li><em>close</em>: processing ends</li>
+<li><em>file start</em>: processing of a new file starts</li>
+<li><em>file end</em>:   processing of current file ends</li>
+<li><em>line</em>: actual line of a file</li>
+</ul>
+<p>The parameter <cite>parser_args</cite> is a list of tuples <cite>(pargs, kargs)</cite> for <cite>parser.add_argument</cite> of the standard library module <cite>argparse</cite>.</p>
+<p>The parameter <cite>desc</cite> is a string description of the command line processor.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sipi.flow">
+<span id="flow-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">flow</span></tt> Module<a class="headerlink" href="#module-sipi.flow" title="Permalink to this headline">¶</a></h2>
+<p>Simple Flow tools</p>
+<dl class="function">
+<dt id="sipi.flow.build_pipeline">
+<tt class="descclassname">sipi.flow.</tt><tt class="descname">build_pipeline</tt><big>(</big><em>blocks</em>, <em>pipe=None</em><big>)</big><a class="reference internal" href="_modules/sipi/flow.html#build_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.flow.build_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a pipeline from the list of blocks</p>
+<p>The first element of the list must correspond to the first <cite>block</cite> of the pipeline.</p>
+<p>Each <cite>block</cite> is a tuple <cite>(handler_function, name)</cite>.
+The <cite>handler_function</cite> must accept 1 tuple parameter of the following signature: <cite>(next_block, (context, msg))</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sipi.flow.coroutine">
+<tt class="descclassname">sipi.flow.</tt><tt class="descname">coroutine</tt><big>(</big><em>func</em><big>)</big><a class="reference internal" href="_modules/sipi/flow.html#coroutine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sipi.flow.coroutine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for coroutine creation &amp; bootstrapping</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -206,6 +257,8 @@ Configuration file format can either be <em>.json</em> or <em>.yaml</em> , the p
 <li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">sipi</span></tt> Package</a></li>
 <li><a class="reference internal" href="#module-sipi.cfg"><tt class="docutils literal"><span class="pre">cfg</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-sipi.tools_os"><tt class="docutils literal"><span class="pre">tools_os</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-sipi.cmd"><tt class="docutils literal"><span class="pre">cmd</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-sipi.flow"><tt class="docutils literal"><span class="pre">flow</span></tt> Module</a></li>
 </ul>
 </li>
 </ul>
