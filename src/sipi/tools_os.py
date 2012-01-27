@@ -5,6 +5,62 @@
 
 import os, errno
 
+def can_write(path):
+    """
+    Checks if the current user (i.e. the script) can delete the given path
+    Must check both user & group level permissions
+    
+    FOR THIS TEST, NEED TO CREATE A DIRECTORY /tmp/_test_root_sipi THROUGH ROOT
+    
+    >>> p="/tmp/_test_sipi"
+    >>> rm(p)
+    ('ok', '/tmp/_test_sipi')
+    >>> touch(p)
+    ('ok', '/tmp/_test_sipi')
+    >>> can_write(p)
+    ('ok', True)
+    >>> rm(p)
+    ('ok', '/tmp/_test_sipi')
+    >>> can_write("/tmp/_test_root_sipi/some_file")
+    ('ok', False)
+    """
+    try:
+        return ("ok", os.access(path, os.W_OK))
+    except:
+        return ("error", None)
+    
+
+def gen_walk(path, max_files=None):
+    """
+    os.walk generator with an optional limit on the number of files returned 
+    """
+    count=0
+    done=False
+    for root, _dirs, files in os.walk(path):
+        
+        for f in files:
+            yield os.path.join(root, f)
+        
+            count=count+1
+            if max_files is not None:
+                if count==max_files:
+                    done=True
+                    break
+            
+        if done: break
+
+
+def remove_common_prefix(common_prefix, path):
+    """
+    >>> remove_common_prefix("/tmp", "/tmp/some_dir/some_file.ext")
+    ('ok', '/some_dir/some_file.ext')
+    """
+    try:
+        _head, _sep, tail=path.partition(common_prefix)
+        return ("ok", tail)
+    except:
+        return ("error", path)
+
 def resolve_path(path):
     """
     Resolves a path with user and environment variables
