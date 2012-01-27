@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Comment: " $1
+
+GIT=`which git`
+
+$GIT add -u
+$GIT add .
+$GIT commit -m "$1"
+$GIT push origin $2
