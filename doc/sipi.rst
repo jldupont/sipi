@@ -25,10 +25,18 @@ sipi Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`cmd` Module
+:mod:`tools_dict` Module
+------------------------
+
+.. automodule:: sipi.tools_dict
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`cmds` Module
 ----------------------
 
-.. automodule:: sipi.cmd
+.. automodule:: sipi.cmds
     :members:
     :undoc-members:
     :show-inheritance:
