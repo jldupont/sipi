@@ -1,9 +1,17 @@
 """
-    Simple OS functions
+    Sipi - Simple OS functions
     
 """
-
 import os, errno
+import shutil
+
+def move(src_path, dst_path):
+    try:
+        shutil.move(src_path, dst_path)
+        return ("ok", None)
+    except Exception, e:
+        return ("error", e)
+
 
 def can_write(path):
     """
