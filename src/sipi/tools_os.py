@@ -6,6 +6,17 @@ import os, errno
 import shutil
 import tempfile
 
+def path_status(path):
+    """
+    >>> path_status("invalid_path_%$&*!")
+    
+    """
+    try:
+        wok=os.access(path, os.W_OK)
+        return ("ok", {"wok": wok})
+    except Exception,e:
+        return ("error", (e.__class__, str(e)))
+
 def atomic_write(path, contents):
     """
     Atomic write to file
